@@ -1,0 +1,20 @@
+<resources>
+    <string name="map_status_available">Available</string>
+    <string name="map_status_busy">Busy</string>
+    <string name="map_status_en_route">On Way</string>
+    <string name="ready_to_book_a_ride">Ready to book a ride</string>
+    <string name="finding_the_best_driver">Finding the best driver...</string>
+    <string name="driver_is_on_the_way">Driver is on the way</string>
+    <string name="your_driver_has_arrived">Your driver has arrived</string>
+    <string name="book_ride">Book Ride</string>
+    <string name="cancel">Cancel</string>
+    <string name="en_route_to_you">En route to you</string>
+    <string name="on_trip">On trip</string>
+    <string name="available">Available</string>
+    <string name="need_your_location_first">Need your location first</string>
+    <string name="location_permission_required">Location permission is required to show drivers near you.</string>
+    <string name="permission_dialog_title">Location Permission Needed</string>
+    <string name="allow_location_access">Allow location access</string>
+    <string name="you">You</string>
+</resources>
+
