@@ -319,12 +319,12 @@ private fun DriverMarker(
     colors: MarkerColors,
 ) {
     val snippet = when {
-        isAssigned -> stringResource(R.string.en_route_to_you)
+        isAssigned || driver.status == DriverStatus.EN_ROUTE -> stringResource(R.string.en_route_to_you)
         driver.status == DriverStatus.BUSY -> stringResource(R.string.on_trip)
         else -> stringResource(R.string.available)
     }
     val icon = when {
-        isAssigned -> colors.enRoute
+        isAssigned || driver.status == DriverStatus.EN_ROUTE -> colors.enRoute
         driver.status == DriverStatus.BUSY -> colors.busy
         else -> colors.available
     }
@@ -420,6 +420,12 @@ private fun MapScreenPreview_WithContent() {
             location = LocationPoint(37.7740, -122.4220),
             headingDegrees = 180f,
             status = DriverStatus.BUSY
+        ),
+        Driver(
+            id = "3",
+            location = LocationPoint(37.7760, -122.4170),
+            headingDegrees = 90f,
+            status = DriverStatus.EN_ROUTE
         )
     )
 
@@ -429,7 +435,9 @@ private fun MapScreenPreview_WithContent() {
                 userLocation = sampleUserLocation,
                 drivers = sampleDrivers,
                 isLocationLoading = false,
-                isDriversLoading = false
+                isDriversLoading = false,
+                assignedDriverId = "3",
+                bookingStatus = BookingStatus.DRIVER_EN_ROUTE,
             ),
             onEvent = {},
         )
