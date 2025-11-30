@@ -9,9 +9,9 @@ Uber-style ride-hailing prototype that demonstrates a clean-architecture Kotlin 
 - Synthetic drivers that move along road-snapped polylines and remain within a city-sized radius of the rider.
 - Booking demo with assignment delays, cancellation, and state messaging (“Searching…”, “Driver en route”, “Driver arrived”).
 - Driver marker colors:
-  - **Black** — available and patrolling.
-  - **Red** — busy/assigned elsewhere.
-  - **Yellow** — currently coming to the rider after a booking.
+  - **Black** — `DriverStatus.AVAILABLE`, casually patrolling.
+  - **Yellow** — `DriverStatus.EN_ROUTE`, already assigned to your booking.
+  - **Red** — `DriverStatus.BUSY`, finishing another passenger drop-off.
 - Permission dialog fallback that guides the user when location access is denied.
 
 ---
@@ -42,6 +42,15 @@ Uber-style ride-hailing prototype that demonstrates a clean-architecture Kotlin 
    - Picks the nearest `DriverStatus.AVAILABLE` driver.
    - Waits a short delay before marking `assignedDriverId` and updating the UI state.
    - Monitors distance to mark “Driver arrived,” or reverts to available when cancelled.
+
+---
+
+## Driver Lifecycle
+1. **Available** — spawned near the rider and looping along patrol waypoints until work arrives.
+2. **En route** — after `AssignDriverToPickup` succeeds, the reservation is pinned and the marker turns yellow while `DriverRepository` feeds the pickup route.
+3. **Busy** — once cancelled or released, drivers fall back to patrol mode, but those finishing other trips remain red until the simulator re-enters them into the available pool.
+
+The Compose UI mirrors these states in marker colors/snippets, and `MapViewModel` only selects from the available subset to keep flows deterministic.
 
 ---
 
