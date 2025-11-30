@@ -30,6 +30,7 @@ class MapViewModel @Inject constructor(
     private val startDriverSimulation: StartDriverSimulationUseCase,
     private val assignDriverToPickup: AssignDriverToPickupUseCase,
     private val releaseDriver: ReleaseDriverUseCase,
+    private val bookingTelemetry: BookingTelemetry,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MapUiState())
@@ -221,6 +222,7 @@ class MapViewModel @Inject constructor(
                             assignedDriverId = driver.id,
                         )
                     }
+                    bookingTelemetry.onBookingAssigned(driver.id, userLocation)
                 }
                 .onFailure { throwable ->
                     _uiState.update {
@@ -239,6 +241,7 @@ class MapViewModel @Inject constructor(
         if (driverId != null) {
             viewModelScope.launch { releaseDriver(driverId) }
         }
+        bookingTelemetry.onBookingCancelled(driverId)
         _uiState.update {
             it.copy(
                 bookingStatus = BookingStatus.IDLE,

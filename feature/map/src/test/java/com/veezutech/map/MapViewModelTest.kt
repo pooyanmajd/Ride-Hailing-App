@@ -40,7 +40,8 @@ class MapViewModelTest {
     fun bookingFlow_assignsNearestDriverAfterDelay() = runTest(dispatcher) {
         val driverRepository = FakeDriverRepository()
         val locationRepository = FakeLocationRepository()
-        val viewModel = createViewModel(driverRepository, locationRepository)
+        val telemetry = RecordingTelemetry()
+        val viewModel = createViewModel(driverRepository, locationRepository, telemetry)
 
         locationRepository.emitLocation(USER_LOCATION)
         advanceUntilIdle()
@@ -62,13 +63,15 @@ class MapViewModelTest {
         assertEquals("near", state.assignedDriverId)
         assertEquals("near", driverRepository.lastAssigned?.first)
         assertEquals(USER_LOCATION, driverRepository.lastAssigned?.second)
+        assertEquals("near", telemetry.assignments.single().first)
     }
 
     @Test
     fun cancelBooking_releasesDriverAndResetsState() = runTest(dispatcher) {
         val driverRepository = FakeDriverRepository()
         val locationRepository = FakeLocationRepository()
-        val viewModel = createViewModel(driverRepository, locationRepository)
+        val telemetry = RecordingTelemetry()
+        val viewModel = createViewModel(driverRepository, locationRepository, telemetry)
 
         locationRepository.emitLocation(USER_LOCATION)
         advanceUntilIdle()
@@ -91,11 +94,13 @@ class MapViewModelTest {
         assertEquals(BookingStatus.IDLE, state.bookingStatus)
         assertNull(state.assignedDriverId)
         assertEquals("near", driverRepository.lastReleasedDriverId)
+        assertEquals(listOf("near"), telemetry.cancellations)
     }
 
     private fun createViewModel(
         driverRepository: FakeDriverRepository,
         locationRepository: FakeLocationRepository,
+        telemetry: BookingTelemetry,
     ): MapViewModel {
         val observeLocation = ObserveCurrentLocationUseCase(locationRepository)
         val observeDrivers = ObserveDriversUseCase(driverRepository)
@@ -109,11 +114,25 @@ class MapViewModelTest {
             startSimulation,
             assignDriver,
             releaseDriver,
+            telemetry,
         )
     }
 
     companion object {
         private val USER_LOCATION = LocationPoint(37.0, -122.0)
+    }
+
+    private class RecordingTelemetry : BookingTelemetry {
+        val assignments = mutableListOf<Pair<String, LocationPoint>>()
+        val cancellations = mutableListOf<String?>()
+
+        override fun onBookingAssigned(driverId: String, pickupLocation: LocationPoint) {
+            assignments += driverId to pickupLocation
+        }
+
+        override fun onBookingCancelled(driverId: String?) {
+            cancellations += driverId
+        }
     }
 }
 
