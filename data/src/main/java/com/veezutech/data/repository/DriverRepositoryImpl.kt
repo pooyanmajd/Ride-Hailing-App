@@ -16,6 +16,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -121,6 +122,7 @@ class DriverRepositoryImpl @Inject constructor(
             )
             navState.mode = NavigationMode.PICKUP
         }
+        updateDriverStatus(driverId, DriverStatus.EN_ROUTE)
     }
 
     private suspend fun fetchRoadAlignedRoute(start: LocationPoint, end: LocationPoint): List<LocationPoint> {
@@ -132,6 +134,15 @@ class DriverRepositoryImpl @Inject constructor(
             navState.mode = NavigationMode.PATROL
             navState.route.clear()
             navState.routeSegmentIndex = 0
+        }
+        updateDriverStatus(driverId, DriverStatus.AVAILABLE)
+    }
+
+    private fun updateDriverStatus(driverId: String, status: DriverStatus) {
+        driversState.update { drivers ->
+            drivers.map { driver ->
+                if (driver.id == driverId) driver.copy(status = status) else driver
+            }
         }
     }
 }

@@ -7,4 +7,4 @@ data class Driver(
     val status: DriverStatus,
 )
 
-enum class DriverStatus { AVAILABLE, BUSY }
+enum class DriverStatus { AVAILABLE, BUSY, EN_ROUTE }

@@ -101,5 +101,38 @@ class DriverRepositoryImplTest {
 
         coVerify(exactly = 0) { directionsApi.fetchRoute(any(), any()) }
     }
+
+    @Test
+    fun `assignDriverToPickup marks driver en route`() = runTest {
+        repository.startSimulation(LocationPoint(51.0, -0.1))
+        dispatcher.scheduler.runCurrent()
+
+        val pickup = LocationPoint(10.01, 10.01)
+        coEvery { directionsApi.fetchRoute(driver.location, pickup) } returns seedRoute
+
+        repository.assignDriverToPickup("D0", pickup)
+
+        val drivers = repository.observeDrivers().first { list ->
+            list.firstOrNull()?.status == DriverStatus.EN_ROUTE
+        }
+        assertEquals(DriverStatus.EN_ROUTE, drivers.first().status)
+    }
+
+    @Test
+    fun `releaseDriver resets driver back to available`() = runTest {
+        repository.startSimulation(LocationPoint(51.0, -0.1))
+        dispatcher.scheduler.runCurrent()
+
+        val pickup = LocationPoint(10.01, 10.01)
+        coEvery { directionsApi.fetchRoute(driver.location, pickup) } returns seedRoute
+
+        repository.assignDriverToPickup("D0", pickup)
+        repository.releaseDriver("D0")
+
+        val drivers = repository.observeDrivers().first { list ->
+            list.firstOrNull()?.status == DriverStatus.AVAILABLE
+        }
+        assertEquals(DriverStatus.AVAILABLE, drivers.first().status)
+    }
 }
 
