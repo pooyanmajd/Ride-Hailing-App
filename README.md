@@ -1,6 +1,6 @@
 # Minipassenger
 
-Uber-style ride-hailing prototype that demonstrates a clean-architecture Kotlin Multiplatform foundation with Google Maps Compose, simulated drivers, and a basic booking flow.
+Ride-hailing prototype that demonstrates a clean-architecture Kotlin Compose foundation with Google Maps Compose, simulated drivers, and a basic booking flow.
 
 ---
 
@@ -12,8 +12,6 @@ Uber-style ride-hailing prototype that demonstrates a clean-architecture Kotlin 
   - **Black** — `DriverStatus.AVAILABLE`, casually patrolling.
   - **Yellow** — `DriverStatus.EN_ROUTE`, already assigned to your booking.
   - **Red** — `DriverStatus.BUSY`, finishing another passenger drop-off.
-- Permission dialog fallback that guides the user when location access is denied.
-
 ---
 
 ## Architecture
@@ -85,6 +83,5 @@ If you’re missing a local JDK, install Temurin 17 and retry.
 - Gradle-managed Secrets Manager instead of `local.properties`.
 - UI tests for permission/booking flows.
 
-Enjoy exploring Minipassenger! Reach out if you need any tweaks or further breakdowns. 🚗💨
-
+I kept it under roughly 6–8 hours, but still slipped in a few extras. Drivers now move toward the rider once a booking kicks off, error handling stays intentionally generic for now, and more tests are on deck. Happy reviewing! 🚗💨
 
