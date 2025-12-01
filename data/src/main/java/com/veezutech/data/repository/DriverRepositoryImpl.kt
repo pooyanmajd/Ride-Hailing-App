@@ -6,6 +6,7 @@ import com.veezutech.data.simulation.DriverRouteSimulator
 import com.veezutech.data.simulation.NavigationMode
 import com.veezutech.data.simulation.NavigationState
 import com.veezutech.domain.models.Driver
+import com.veezutech.domain.models.DriverStatus
 import com.veezutech.domain.models.LocationPoint
 import com.veezutech.domain.repository.DriverRepository
 import kotlinx.coroutines.CoroutineScope

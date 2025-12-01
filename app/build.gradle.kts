@@ -28,7 +28,6 @@ android {
             providers = providers,
         ).getProperty("MAPS_API_KEY", "")
 
-        print("🔫MAPS_API_KEY: $mapsApiKey")
         manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
     }
 
