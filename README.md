@@ -53,7 +53,7 @@ The Compose UI mirrors these states in marker colors/snippets, and `MapViewModel
 ---
 
 ## Requirements & Setup
-1. **Android Studio Hedgehog+** with JDK 17 and Android SDK 34.
+1. **Android Studio Hedgehog+** with **JDK 21** and Android SDK 34.
 2. **Google Maps / Routes API Key**
    - Enable Maps SDK for Android, Fused Location Provider, and **Routes API v2**.
    - In `local.properties`, add:  
@@ -63,6 +63,23 @@ The Compose UI mirrors these states in marker colors/snippets, and `MapViewModel
    ```bash
    ./gradlew :app:assembleDebug
    ```
+
+### macOS quick start
+1. Install Temurin 21 (or any OpenJDK 21 build): `brew install temurin@21`.
+2. Point your shell and Android Studio at it:
+   ```bash
+   export JAVA_HOME=$(/usr/libexec/java_home -v 21)
+   export PATH="$JAVA_HOME/bin:$PATH"
+   ```
+3. Clone the repo, then verify Gradle sees Java 21:
+   ```bash
+   ./gradlew --version
+   ```
+4. Run the feature tests and assemble debug:
+   ```bash
+   ./gradlew feature:map:test :app:assembleDebug
+   ```
+If Android Studio still references an older runtime, open **Settings ▸ Build Tools ▸ Gradle** and set both “Gradle JDK” and “Kotlin JDK” to 21.
 
 > Note: Routes API calls require network access; the simulator falls back to synthetic polylines if the API returns errors.
 

@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.jvm)
 }
 kotlin {
-    jvmToolchain(19)
+    jvmToolchain(21)
 }
 
 dependencies {
