@@ -16,5 +16,6 @@
     <string name="permission_dialog_title">Location Permission Needed</string>
     <string name="allow_location_access">Allow location access</string>
     <string name="you">You</string>
+    <string name="retry">Retry</string>
 </resources>
 

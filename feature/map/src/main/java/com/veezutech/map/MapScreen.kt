@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material3.AlertDialog
@@ -38,6 +40,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -46,6 +49,7 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.rememberUpdatedMarkerState
 import com.veezutech.domain.models.Driver
 import com.veezutech.domain.models.DriverStatus
 import com.veezutech.domain.models.LocationPoint
@@ -88,7 +92,6 @@ fun MapScreen(
         }
 
         if (!hasRequestedPermission) {
-            hasRequestedPermission = true
             permissionLauncher.launch(locationPermissions)
         }
     }
@@ -241,32 +244,22 @@ private fun PermissionOverlay(
     message: String,
     onRetry: () -> Unit,
 ) {
-    Surface(
-        tonalElevation = 4.dp,
-        shadowElevation = 4.dp,
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp)
-    ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    text = message,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(bottom = 12.dp),
-                )
-                FloatingActionButton(onClick = onRetry) {
-                    Text("Retry")
-                }
+    AlertDialog(
+        onDismissRequest = {},
+        title = { Text(stringResource(R.string.permission_dialog_title)) },
+        text = {
+            Text(
+                text = message,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        },
+        confirmButton = {
+            Button(onClick = onRetry) {
+                Text(stringResource(R.string.retry))
             }
-        }
-    }
+        },
+        dismissButton = {}
+    )
 }
 
 // --- Mapping helpers (UI-only) ---
@@ -330,7 +323,7 @@ private fun DriverMarker(
     }
 
     Marker(
-        state = MarkerState(position = driver.location.toLatLng()),
+        state = rememberUpdatedMarkerState(position = driver.location.toLatLng()) ,
         title = "Driver ${driver.id}",
         rotation = driver.headingDegrees,
         icon = icon,
@@ -344,9 +337,9 @@ private fun LocationPoint.toLatLng(): LatLng =
     LatLng(latitude, longitude)
 
 private data class MarkerColors(
-    val available: com.google.android.gms.maps.model.BitmapDescriptor,
-    val busy: com.google.android.gms.maps.model.BitmapDescriptor,
-    val enRoute: com.google.android.gms.maps.model.BitmapDescriptor,
+    val available: BitmapDescriptor,
+    val busy: BitmapDescriptor,
+    val enRoute: BitmapDescriptor,
 )
 
 @Composable
@@ -370,24 +363,6 @@ private fun rememberMarkerColors(context: Context): MarkerColors {
         )
     }
     return MarkerColors(available, busy, enRoute)
-}
-
-@Composable
-private fun PermissionDialog(
-    title: String,
-    message: String,
-    confirmLabel: String,
-    onConfirm: () -> Unit,
-) {
-    AlertDialog(
-        onDismissRequest = {},
-        title = { Text(title) },
-        text = { Text(message) },
-        confirmButton = {
-            Button(onClick = onConfirm) { Text(confirmLabel) }
-        },
-        dismissButton = {}
-    )
 }
 
 @Preview(showBackground = true)
