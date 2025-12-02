@@ -32,7 +32,7 @@ Ride-hailing prototype that demonstrates a clean-architecture Kotlin Compose fou
 1. When the map is ready **and** the user location is known, `StartDriverSimulationUseCase` asks `DriverRepository` to seed:
    - Five nearby “addresses” (waypoints) around the rider.
    - Drivers anchored to those waypoints with road-aligned routes from Google Routes API v2.
-2. `DriverRepositoryImpl` runs a long-lived coroutine (cancelable via `stopSimulation()`) that:
+2. `DriverRepositoryImpl` runs a long-lived coroutine that:
    - Interpolates along each driver’s route every 1.5s.
    - Re-queues routes when a patrol segment ends.
    - Switches navigation mode to **PICKUP** when a driver is assigned so the icon turns yellow.
